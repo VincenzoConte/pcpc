@@ -170,6 +170,11 @@ Risorse massime utilizzate:
 
 Il numero massimo di iterazioni è stato fissato a 100.
 
+Il programma è stato compilato utilizzando il comando
+```
+mpicc ProgettoPCPC.c -lm -o ProgettoPCPC
+```
+
 I test sono stati effettuati utilizzando il seguente comando 
 ```
 mpirun -np X --hostfile hostfile jacobi [N] [M]
@@ -178,24 +183,24 @@ X è il numero di processori da utilizzare, N è il numero di righe della matric
 
 ## Strong Scaling
 
-Lo Strong Scaling prevede un numero fissato di corpi con un incremento progressivo dei processori per testare la scalabilità. Nel nostro caso abbiamo effettuato due casi di test:
-- 50400 corpi: Numero divisibile per tutti i valori di processori che abbiamo utilizzato, questo caso mostra i tempi quando solamente le funzioni collettive sono utilizzate
-- 50000 corpi: Non tutti i test in questo caso utilizzano le funzioni collettive, ma si alternano tra funzioni collettive e funzioni point-to-point
-Nella figura in basso è possibile osservare i risultati ottenuti durante questa fase di testing. 
+Per effettuare i test di strong scaling è stata utilizzata una matrice in input di dimensioni 5000x5000. Il programma è stato eseguito più volte on un diverso numero di processori, i risultati sono mostrati nel grafico e nella tabella.
 
-![Strong Scaling](img/Strong_scalability.png)
+![Strong Scaling](img/strong_scaling.png)
 
-Come è possibile notare i due casi hanno un andamento simile mostrando che non c'è differenzia sostanziale tra i casi che ricadono nelle funzioni collettive e quelli che ricadono nelle funzioni point-to-point.
+
+|N.processori|1|2|4|6|8|10|12|14|16|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|**Tempo(ms)**|36488.39|18465.753|9493.501|6465.698|5000.177|4043.504|3531.853|3087.721|2770.475|
 
 ## Weak Scaling
 
-Il Weak Scaling prevede un numero fissato di corpi per ogni processore, quindi all'incremento dei processori incrementa proporzionalmente anche il numero di corpi utilizzati per il test.
-Per il test sono stati effettuati due casi di test:
-- 1500 corpi: Test con un carico basso
-- 5000 corpi: Test con un carico alto
-Nella figura in basso è possibile osservare i risultati ottenuti durante questa fase di testing.
+I test di weak scaling sono stati eseguiti utilizzando una matrice di dimensione 1000x5000 per singolo processore e variando il numero di processori. Il grafico e la tabella riportano i risultati dei test.
 
-![Weak Scaling](weak/weakScaling.png)
+![Weak Scaling](img/weak_scaling.png)
+
+|N.processori|1|2|4|6|8|10|12|14|16|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|**Tempo(ms)**|7272.651|7443.273|7654.562|7815.984|7944.291|8038.235|8326.949|8502.975|8683.473|
 
 ## Fattori di efficienza della scalabilità
 
@@ -215,21 +220,7 @@ Con:
 
 I fattori di efficienza sono visualizzabili nella tabella seguente:
 
-||4|8|12|16|20|24|28|32|
+||2|4|6|8|10|12|14|16|
 |--------|--------|--------|--------|--------|--------|--------|--------|--------|
-|Strong Scaling 50400 corpi|0.9919|0.9810|0.9924|0.9688|0.5173|0.5144|0.5098|0.5108|
-|Strong Scaling 50000 corpi|0.9989|0.9874|0.9569|0.9914|0.5192|0.5114|0.5102|0.5123|
-|Weak Scaling 1500 corpi/proc|0.2478|0.1196|0.0823|0.0608|0.0259|0.0211|0.0181|0.01578|
-|Weak Scaling 5000 corpi/proc|0.2476|0.1247|0.0819|0.0604|0.0260|0.0214|0.0182|0.01610|
-
-___
-___
-
-##### Project Template
-
-- strong: cartella contenente tutti i risultati dei test dello strong scaling, 50 casi con 50000 corpi e 504 casi con 50400 corpi. Contiene inoltre anche il grafico finale dei risultati ottenuti.
-- weak: cartella contentente tutti i risultati dei test del weak scaling, 1500 casi con 1500 corpi/processore e 5000 casi con 5000 corpi/processori. Contiene inoltre anche il grafico finale dei risultati ottenuti.i
-- data: contiene file di appoggio per l'elaborazione dei dati raccolti
-- hostlist: hostfile per l'utilizzo del cluster durante il testing su AWS
-- nbody: eseguibile del programma realizzato
-- nbody.c: prodotto finale del progetto da noi svolto
+|Strong Scaling|0.988|0.9608|.9405|0.9121|0.8609|0.8440|0.8231|
+|Weak Scaling|0.9770|0.9501|0.9304|0.9154|0.9047|0.8733|0.8553|0.8375|
