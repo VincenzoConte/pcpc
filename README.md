@@ -40,9 +40,9 @@ int indexes[2];
 	}
 ```
 
-Ogni processore ottiene **q** righe e le rimanenti sono distribuite ai primi r processori, in questo modo si ottiene la distribuzione più equa possibile. Il master invia agli slave gli indici della prima e edell'ultima riga a lui assegnate tramite un array di 2 elementi, in modo da ridurre l'overhead di comunicazione.
+Ogni processore ottiene **q** righe e le rimanenti sono distribuite ai primi **r** processori, in questo modo si ottiene la distribuzione più equa possibile. Il master invia ad ogni slave gli indici della prima e e dell'ultima riga a lui assegnate tramite un array di 2 elementi, in modo da ridurre l'overhead di comunicazione.
 
-A questo punto inizia la computazione che c procede finchè non raggiunge il numero massimo di passi di iterazione o la soluzione converge.
+A questo punto inizia la computazione che procede finchè non raggiunge il numero massimo di passi di iterazione o la soluzione converge.
 
 ```c
 int step=0;
@@ -75,7 +75,7 @@ if(p>1){
 }
 ```
 
-Una volta terminata la comunicazione ogni processore effettua la computazione sulla sua parte di matrice. Iva lori calcolati vengono memorizzati nell'array **y** inizializzato con dimensione pari alla grandezza della sottomatrice assegnata al processore.
+Una volta terminata la comunicazione ogni processore effettua la computazione sulla sua parte di matrice. I valori calcolati vengono memorizzati nell'array **y** inizializzato con dimensione pari alla grandezza della sottomatrice assegnata al processore.
 
 ```c
 ...
@@ -92,7 +92,7 @@ for(int i=indexes[0];i<=indexes[1];i++){
 }
 ```
 
-Concluso il calcolo dei nuovi valori ogni processore calcola il quadrato della differenza tra i valori precedenti e attuali della sottomatrice e lo invia al master. Il master raccoglie i valori da tutti i porcessori, li somma e ne fa la radice. Se il risultato è minore di _1e-2_ allora setta la variabile stop a 1 altrimenti a 0, e la invia a tutti i nodi. Infine si ricopiano i valori calcolati nella matrice.
+Concluso il calcolo dei nuovi valori ogni processore calcola il quadrato della differenza tra i valori precedenti e attuali della sottomatrice e lo invia al master. Il master raccoglie i valori da tutti i processori, li somma e ne fa la radice. Se il risultato è minore di _1e-2_ allora setta la variabile stop a 1 altrimenti a 0, e la invia a tutti i nodi. Infine si ricopiano i valori calcolati nella matrice.
 
 ```c
 float diffnorm = 0;
@@ -131,7 +131,7 @@ for(int i=indexes[0];i<=indexes[1];i++)
 	}
 ```
 
-Terminate la computazione tutti i nodi inviano la loro parte di matrice al master, che ricompone la matrice e la stampa.
+Terminate la computazione tutti i nodi inviano la loro parte di matrice al master, che ricompone la matrice e la stampa in un file.
 ```c
 if(my_rank==0){
 	int start=indexes[1]+1;
@@ -143,13 +143,14 @@ if(my_rank==0){
 	}
 	if(stop)
 		printf("converge in %d passi\n\n", step);
-	for(int i=1;i<N-1;i++){
-		for(int j=1;j<M-1;j++){
-			printf("%f\t", xrow[i][j]);
+	FILE *f=fopen("result.txt", "w");
+		for(int i=1;i<N-1;i++){
+			for(int j=1;j<M-1;j++){
+				fprintf(f,"%f\t", xrow[i][j]);
+			}
+			fprintf(f,"\n");
 		}
-		printf("\n");
-	}
-	printf("\n");
+		fprintf(f,"\n");
 }
 else{
 	MPI_Send(xrow[indexes[0]], (indexes[1]-indexes[0]+1)*M, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
