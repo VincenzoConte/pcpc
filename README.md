@@ -144,13 +144,13 @@ if(my_rank==0){
 	if(stop)
 		printf("converge in %d passi\n\n", step);
 	FILE *f=fopen("result.txt", "w");
-		for(int i=1;i<N-1;i++){
-			for(int j=1;j<M-1;j++){
-				fprintf(f,"%f\t", xrow[i][j]);
-			}
-			fprintf(f,"\n");
+	for(int i=1;i<N-1;i++){
+		for(int j=1;j<M-1;j++){
+			fprintf(f,"%f\t", xrow[i][j]);
 		}
 		fprintf(f,"\n");
+	}
+	fprintf(f,"\n");
 }
 else{
 	MPI_Send(xrow[indexes[0]], (indexes[1]-indexes[0]+1)*M, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
